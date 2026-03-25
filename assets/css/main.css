@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-purple: #7c4dca;
+  --brand-dark: #2d1f42;
+  --brand-yellow: #d4ed1a;
+  --sidebar-bg: #120a22;
+  --sidebar-hover: #2a1850;
+  --sidebar-active: rgba(124, 77, 202, 0.15);
+  --sidebar-text: #9480b8;
+  --sidebar-text-active: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f1f5f9;
+  color: #1e293b;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Custom sidebar styles */
+.sidebar-link {
+  @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150;
+  color: var(--sidebar-text);
+}
+.sidebar-link:hover {
+  background-color: var(--sidebar-hover);
+  color: #e2e8f0;
+}
+.sidebar-link.active {
+  background-color: var(--sidebar-active);
+  color: var(--sidebar-text-active);
+  border-left: 3px solid var(--brand-purple);
+}
+
+/* Savings badge */
+.savings-badge {
+  @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold;
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+/* Status badges */
+.status-pagada {
+  @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+  background-color: #dcfce7;
+  color: #15803d;
+}
+.status-pendiente {
+  @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+  background-color: #fef9c3;
+  color: #854d0e;
+}
+.status-vencida {
+  @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+  background-color: #fee2e2;
+  color: #991b1b;
+}

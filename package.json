@@ -1,0 +1,27 @@
+{
+  "name": "vecinos-company",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/ui": "2.19.2",
+    "@nuxtjs/supabase": "^1.4.6",
+    "apexcharts": "^5.10.0",
+    "leaflet": "^1.9.4",
+    "lucide-vue-next": "^0.469.0",
+    "nuxt": "^3.16.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0",
+    "vue3-apexcharts": "^1.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "typescript": "^5.7.3"
+  }
+}
