@@ -25,22 +25,13 @@
       <div class="flex flex-col items-center mb-10">
         <!-- Brand mark -->
         <div
-          class="w-16 h-16 rounded-2xl flex items-center justify-center mb-5"
-          style="background: #1e1038; border: 1px solid #3d2470"
+          class="h-16 rounded-2xl flex items-center justify-center mb-5"
         >
-          <svg width="38" height="42" viewBox="0 0 38 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 18 L19 5 L35 18" stroke="white" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M10.5 24 L10.5 33.5 Q10.5 40 19 40 Q27.5 40 27.5 33.5 L27.5 24" stroke="white" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-            <circle cx="6.5" cy="13" r="4" fill="#a78bfa"/>
-          </svg>
+          <img src="public/logo-dark-v.png" class="h-12" alt="">
         </div>
 
         <!-- Wordmark -->
         <div class="text-center">
-          <div class="flex items-baseline gap-1.5 justify-center">
-            <span class="text-3xl font-bold text-white tracking-tight">Unergy</span>
-            <span class="text-3xl font-bold tracking-tight" style="color: #a78bfa">Vecinos</span>
-          </div>
           <p class="text-sm mt-1.5" style="color: #6b5d8a">Plataforma de Gestión Energética Corporativa</p>
         </div>
       </div>
