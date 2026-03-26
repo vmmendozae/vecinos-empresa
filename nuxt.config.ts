@@ -17,7 +17,7 @@ export default defineNuxtConfig({
     url: 'https://gyepgqeejspozhocrpkj.supabase.co',
     key: 'sb_publishable_W6MwO6-9nC68i6frGsXn2g_Qu_FF7ct',
     // service key solo por env var (nunca en código fuente)
-    serviceKey: process.env.NUXT_SUPABASE_SERVICE_KEY || process.env.SUPABASE_SERVICE_KEY || '',
+    serviceKey: process.env.NUXT_SUPABASE_SERVICE_KEY || process.env.SUPABASE_SERVICE_KEY || undefined,
     redirect: false,
   },
 

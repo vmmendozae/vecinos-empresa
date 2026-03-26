@@ -5,6 +5,9 @@
 [build.environment]
   NODE_VERSION = "20"
   NPM_FLAGS = "--legacy-peer-deps"
+  # Publishable key (segura para commitear, equivale a anon key)
+  NUXT_PUBLIC_SUPABASE_URL = "https://gyepgqeejspozhocrpkj.supabase.co"
+  NUXT_PUBLIC_SUPABASE_KEY = "sb_publishable_W6MwO6-9nC68i6frGsXn2g_Qu_FF7ct"
 
 # SPA fallback: todas las rutas sirven index.html
 [[redirects]]
