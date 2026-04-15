@@ -502,7 +502,7 @@
               <input
                 v-model="form.name"
                 type="text"
-                placeholder="Ej: OXXO Chapinero"
+                :placeholder="`Ej: ${(companyName || 'Mi empresa').split(' ')[0]} Chapinero`"
                 class="w-full px-3.5 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 transition"
                 :class="formErrors.name ? 'border-red-300 focus:ring-red-200' : 'border-slate-200 focus:ring-purple-100 focus:border-purple-400'"
               />
@@ -883,6 +883,8 @@ const {
   cityCount,
   ugranjaCount,
 } = useSedes()
+
+const { companyName } = useCompany()
 
 onMounted(() => fetchBranches())
 
