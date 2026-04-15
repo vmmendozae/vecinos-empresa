@@ -129,8 +129,11 @@
             <tr class="border-b border-slate-100 bg-slate-50/50">
               <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Sede</th>
               <th class="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Ciudad</th>
-              <th class="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">NIT</th>
-              <th class="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Apertura</th>
+              <th class="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">OR</th>
+              <th class="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Comercializador</th>
+              <th class="text-right px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">kWh prom.</th>
+              <th class="text-center px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">% Asig.</th>
+              <th class="text-center px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Solar</th>
               <th class="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">uGranja</th>
               <th class="px-4 py-3 w-20" />
             </tr>
@@ -172,14 +175,54 @@
                 </div>
               </td>
 
-              <!-- NIT -->
-              <td class="px-4 py-3.5 font-mono text-xs text-slate-500">
-                {{ branch.nit || '—' }}
+              <!-- OR -->
+              <td class="px-4 py-3.5 text-xs text-slate-600">
+                {{ branch.or || '—' }}
               </td>
 
-              <!-- Opening date -->
-              <td class="px-4 py-3.5 text-slate-500 text-xs">
-                {{ branch.opening_date ? formatDate(branch.opening_date) : '—' }}
+              <!-- Comercializador -->
+              <td class="px-4 py-3.5 text-xs text-slate-600">
+                {{ branch.comercializador || '—' }}
+              </td>
+
+              <!-- kWh -->
+              <td class="px-4 py-3.5 text-right">
+                <span v-if="branch.kwh_consumption" class="text-sm font-medium text-slate-700 tabular-nums">
+                  {{ branch.kwh_consumption.toLocaleString('es-CO') }}
+                </span>
+                <span v-else class="text-slate-300 text-xs">—</span>
+              </td>
+
+              <!-- % Asignación -->
+              <td class="px-4 py-3.5 text-center">
+                <template v-if="branch.asignacion_pct != null">
+                  <span
+                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold tabular-nums"
+                    :class="branch.asignacion_pct >= 70 && branch.asignacion_pct <= 80
+                      ? 'bg-emerald-50 text-emerald-700'
+                      : 'bg-amber-50 text-amber-700'"
+                  >
+                    <span
+                      v-if="branch.asignacion_pct < 70 || branch.asignacion_pct > 80"
+                      class="w-1.5 h-1.5 rounded-full bg-amber-400 mr-1"
+                    />
+                    {{ branch.asignacion_pct }}%
+                  </span>
+                </template>
+                <span v-else class="text-slate-300 text-xs">—</span>
+              </td>
+
+              <!-- Solar propio -->
+              <td class="px-4 py-3.5 text-center">
+                <span
+                  v-if="branch.solar"
+                  class="inline-flex items-center justify-center w-7 h-7 rounded-full"
+                  style="background: #fef9c3"
+                  title="Proyecto solar propio"
+                >
+                  <SunIcon class="w-4 h-4 text-yellow-500" />
+                </span>
+                <span v-else class="text-slate-200 text-lg leading-none">·</span>
               </td>
 
               <!-- uGranja (read-only) -->
@@ -218,7 +261,7 @@
 
             <!-- Empty state -->
             <tr v-if="filteredBranches.length === 0">
-              <td colspan="6" class="px-4 py-16 text-center">
+              <td colspan="9" class="px-4 py-16 text-center">
                 <div class="flex flex-col items-center gap-3">
                   <div class="w-14 h-14 rounded-2xl flex items-center justify-center" style="background: #f3eeff">
                     <BuildingIcon class="w-7 h-7" style="color: #c4b5f4" />
@@ -312,6 +355,106 @@
                 v-model="form.opening_date"
                 type="date"
                 class="w-full px-3.5 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-100 focus:border-purple-400 transition text-slate-700"
+              />
+            </div>
+          </div>
+
+          <!-- OR + Comercializador -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">OR</label>
+              <select
+                v-model="form.or"
+                class="w-full px-3.5 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-100 focus:border-purple-400 bg-white text-slate-700 transition"
+              >
+                <option value="">Sin asignar</option>
+                <option v-for="o in OR_OPTIONS" :key="o" :value="o">{{ o }}</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Comercializador</label>
+              <select
+                v-model="form.comercializador"
+                class="w-full px-3.5 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-100 focus:border-purple-400 bg-white text-slate-700 transition"
+              >
+                <option value="">Sin asignar</option>
+                <option v-for="c in COMERCIALIZADOR_OPTIONS" :key="c" :value="c">{{ c }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- kWh + % Asignación -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Consumo kWh (promedio)</label>
+              <input
+                v-model.number="form.kwh_consumption"
+                type="number"
+                min="0"
+                placeholder="Ej: 12500"
+                class="w-full px-3.5 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-100 focus:border-purple-400 transition bg-white"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">
+                % de Asignación
+                <span class="normal-case font-normal text-slate-400">(ideal 70–80%)</span>
+              </label>
+              <div class="relative">
+                <input
+                  v-model.number="form.asignacion_pct"
+                  type="number"
+                  min="0"
+                  max="100"
+                  placeholder="Ej: 75"
+                  class="w-full px-3.5 py-2.5 pr-8 text-sm border rounded-lg focus:outline-none focus:ring-2 transition bg-white"
+                  :class="form.asignacion_pct != null && (form.asignacion_pct < 70 || form.asignacion_pct > 80)
+                    ? 'border-amber-300 focus:ring-amber-100 focus:border-amber-400'
+                    : 'border-slate-200 focus:ring-purple-100 focus:border-purple-400'"
+                />
+                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">%</span>
+              </div>
+              <p
+                v-if="form.asignacion_pct != null && (form.asignacion_pct < 70 || form.asignacion_pct > 80)"
+                class="text-xs text-amber-600 mt-1 flex items-center gap-1"
+              >
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" />
+                Fuera del rango recomendado (70–80%)
+              </p>
+            </div>
+          </div>
+
+          <!-- Solar propio toggle -->
+          <div
+            class="flex items-center justify-between p-4 rounded-xl border transition-colors cursor-pointer"
+            :style="form.solar
+              ? 'background: #fefce8; border-color: #fde68a'
+              : 'background: #f8fafc; border-color: #e2e8f0'"
+            @click="form.solar = !form.solar"
+          >
+            <div class="flex items-center gap-3">
+              <div
+                class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                :style="form.solar ? 'background: #fef08a' : 'background: #f1f5f9'"
+              >
+                <SunIcon class="w-4.5 h-4.5" :style="form.solar ? 'color: #ca8a04' : 'color: #94a3b8'" />
+              </div>
+              <div>
+                <p class="text-sm font-semibold" :class="form.solar ? 'text-yellow-800' : 'text-slate-700'">
+                  Proyecto solar propio
+                </p>
+                <p class="text-xs" :class="form.solar ? 'text-yellow-600' : 'text-slate-400'">
+                  {{ form.solar ? 'Esta sede genera energía solar propia' : 'Sin generación solar propia' }}
+                </p>
+              </div>
+            </div>
+            <div
+              class="relative w-11 h-6 rounded-full transition-colors duration-200 shrink-0"
+              :style="form.solar ? 'background: #eab308' : 'background: #cbd5e1'"
+            >
+              <div
+                class="absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200"
+                :class="form.solar ? 'translate-x-5' : 'translate-x-1'"
               />
             </div>
           </div>
@@ -438,6 +581,12 @@ import {
   CheckIcon,
   AlertCircleIcon,
 } from 'lucide-vue-next'
+
+const OR_OPTIONS = ['AIR-E', 'CARIBEMAR - AFINIA', 'ENEL', 'EPM', 'ESSA']
+const COMERCIALIZADOR_OPTIONS = [
+  'AFINIA', 'AIR-E', 'AIR-E - SOLARIS', 'ENEL', 'EPM',
+  'ESSA', 'NEU ENERGY', 'NEU ENERGY - SOLARIS', 'QI ENERGY', 'VATIA',
+]
 import type { Branch } from '~/types/database'
 import type { BranchForm } from '~/composables/useSedes'
 
@@ -475,6 +624,11 @@ const emptyForm = (): BranchForm => ({
   nit: '',
   opening_date: '',
   unergy_subscribed: false,
+  or: '',
+  comercializador: '',
+  kwh_consumption: null,
+  asignacion_pct: null,
+  solar: false,
 })
 
 const form = reactive<BranchForm>(emptyForm())
@@ -497,6 +651,11 @@ function openEdit(branch: Branch) {
     nit: branch.nit || '',
     opening_date: branch.opening_date || '',
     unergy_subscribed: branch.unergy_subscribed,
+    or: branch.or || '',
+    comercializador: branch.comercializador || '',
+    kwh_consumption: branch.kwh_consumption ?? null,
+    asignacion_pct: branch.asignacion_pct ?? null,
+    solar: branch.solar ?? false,
   })
   formErrors.name = ''
   formErrors.city = ''

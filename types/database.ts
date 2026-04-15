@@ -33,6 +33,11 @@ export interface Branch {
   unergy_subscribed: boolean
   ugranja_id: string | null
   ugranjas?: UGranja | null
+  or: string | null
+  comercializador: string | null
+  kwh_consumption: number | null
+  asignacion_pct: number | null
+  solar: boolean
   created_at: string
 }
 

@@ -6,6 +6,11 @@ export interface BranchForm {
   nit: string
   opening_date: string
   unergy_subscribed: boolean
+  or: string
+  comercializador: string
+  kwh_consumption: number | null
+  asignacion_pct: number | null
+  solar: boolean
 }
 
 export const useSedes = () => {
@@ -40,6 +45,11 @@ export const useSedes = () => {
         opening_date: form.opening_date || null,
         unergy_subscribed: form.unergy_subscribed,
         company_id: company.value.id,
+        or: form.or || null,
+        comercializador: form.comercializador || null,
+        kwh_consumption: form.kwh_consumption ?? null,
+        asignacion_pct: form.asignacion_pct ?? null,
+        solar: form.solar,
       })
       .select('*, ugranjas(*)')
       .single()
@@ -61,6 +71,11 @@ export const useSedes = () => {
         nit: form.nit || null,
         opening_date: form.opening_date || null,
         unergy_subscribed: form.unergy_subscribed,
+        or: form.or || null,
+        comercializador: form.comercializador || null,
+        kwh_consumption: form.kwh_consumption ?? null,
+        asignacion_pct: form.asignacion_pct ?? null,
+        solar: form.solar,
       })
       .eq('id', id)
       .select('*, ugranjas(*)')
