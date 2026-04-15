@@ -38,6 +38,8 @@ export interface Branch {
   kwh_consumption: number | null
   asignacion_pct: number | null
   solar: boolean
+  notes: string | null
+  labels: string[]
   created_at: string
 }
 

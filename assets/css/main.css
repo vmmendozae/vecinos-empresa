@@ -56,6 +56,22 @@ body {
   border-left: 3px solid var(--brand-purple);
 }
 
+/* Force light inputs everywhere */
+input,
+select,
+textarea,
+[data-headlessui-state] input {
+  background-color: #ffffff !important;
+  color: #1e293b !important;
+}
+
+/* Nuxt UI UInput / USelect light override */
+.relative input,
+.relative select {
+  background-color: #ffffff !important;
+  color: #1e293b !important;
+}
+
 /* Savings badge */
 .savings-badge {
   @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold;

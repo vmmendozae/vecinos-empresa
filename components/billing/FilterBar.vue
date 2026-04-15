@@ -8,6 +8,7 @@
           placeholder="Buscar sede o N° factura..."
           icon="i-heroicons-magnifying-glass"
           size="sm"
+          color="white"
           class="w-full"
         />
       </div>
@@ -18,6 +19,7 @@
         :options="periodOptions"
         placeholder="Período"
         size="sm"
+        color="white"
         class="w-44"
       />
 
@@ -27,6 +29,7 @@
         :options="cityOptions"
         placeholder="Ciudad"
         size="sm"
+        color="white"
         class="w-36"
       />
 
@@ -36,6 +39,7 @@
         :options="statusOptions"
         placeholder="Estado"
         size="sm"
+        color="white"
         class="w-36"
       />
 
@@ -45,6 +49,7 @@
         :options="marketerOptions"
         placeholder="Comercializador"
         size="sm"
+        color="white"
         class="w-44"
       />
 

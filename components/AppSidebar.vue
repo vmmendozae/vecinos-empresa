@@ -103,9 +103,9 @@ const { company, companyInitial, companyName } = useCompany()
 const userEmail = computed(() => user.value?.email || '')
 
 const mainNav = [
+  { href: '/sedes', label: 'Sedes', icon: BuildingIcon, badge: null },
   { href: '/facturacion', label: 'Facturación', icon: LayoutDashboardIcon, badge: null },
   { href: '/ugranjas', label: 'uGranjas', icon: SunIcon, badge: null },
-  { href: '/sedes', label: 'Sedes', icon: BuildingIcon, badge: null },
 ]
 
 const secondaryNav = [
