@@ -838,7 +838,7 @@ function isAutoProspecto(branch: Branch): boolean {
   return (
     !!branch.or &&
     !!branch.comercializador &&
-    branch.or === branch.comercializador &&
+    branch.or.trim().toLowerCase() === branch.comercializador.trim().toLowerCase() &&
     !branch.solar &&
     !!branch.kwh_consumption
   )

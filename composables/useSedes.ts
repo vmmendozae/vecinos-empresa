@@ -113,7 +113,13 @@ export const useSedes = () => {
   const filterProspecto = ref(false)
 
   function isProspecto(b: Branch) {
-    return !!b.or && !!b.comercializador && b.or === b.comercializador && !b.solar && !!b.kwh_consumption
+    return (
+      !!b.or &&
+      !!b.comercializador &&
+      b.or.trim().toLowerCase() === b.comercializador.trim().toLowerCase() &&
+      !b.solar &&
+      !!b.kwh_consumption
+    )
   }
 
   const filteredBranches = computed(() => {
@@ -122,13 +128,13 @@ export const useSedes = () => {
         const q = searchQuery.value.toLowerCase()
         if (
           !b.name.toLowerCase().includes(q) &&
-          !b.city.toLowerCase().includes(q) &&
+          !(b.city || '').toLowerCase().includes(q) &&
           !(b.nit || '').toLowerCase().includes(q)
         ) return false
       }
-      if (filterCity.value && b.city !== filterCity.value) return false
-      if (filterOR.value && b.or !== filterOR.value) return false
-      if (filterComercializador.value && b.comercializador !== filterComercializador.value) return false
+      if (filterCity.value && (b.city || '').trim().toLowerCase() !== filterCity.value.trim().toLowerCase()) return false
+      if (filterOR.value && (b.or || '').trim().toLowerCase() !== filterOR.value.trim().toLowerCase()) return false
+      if (filterComercializador.value && (b.comercializador || '').trim().toLowerCase() !== filterComercializador.value.trim().toLowerCase()) return false
       if (filterUnergy.value && !b.unergy_subscribed) return false
       if (filterSolar.value && !b.solar) return false
       if (filterAsignacionFuera.value) {
@@ -140,38 +146,72 @@ export const useSedes = () => {
     })
   })
 
-  const availableCities = computed(() =>
-    [...new Set(branches.value.map((b) => b.city).filter(Boolean))].sort(),
-  )
-  const availableORs = computed(() =>
-    [...new Set(branches.value.map((b) => b.or).filter(Boolean))].sort() as string[],
-  )
-  const availableComercializadores = computed(() =>
-    [...new Set(branches.value.map((b) => b.comercializador).filter(Boolean))].sort() as string[],
-  )
+  // Deduplicate options case-insensitively, keep canonical (first seen) form
+  const availableCities = computed(() => {
+    const seen = new Map<string, string>()
+    branches.value.forEach((b) => {
+      if (b.city) {
+        const key = b.city.trim().toLowerCase()
+        if (!seen.has(key)) seen.set(key, b.city.trim())
+      }
+    })
+    return [...seen.values()].sort((a, b) => a.localeCompare(b, 'es'))
+  })
+
+  const availableORs = computed(() => {
+    const seen = new Map<string, string>()
+    branches.value.forEach((b) => {
+      if (b.or) {
+        const key = b.or.trim().toLowerCase()
+        if (!seen.has(key)) seen.set(key, b.or.trim())
+      }
+    })
+    return [...seen.values()].sort((a, b) => a.localeCompare(b)) as string[]
+  })
+
+  const availableComercializadores = computed(() => {
+    const seen = new Map<string, string>()
+    branches.value.forEach((b) => {
+      if (b.comercializador) {
+        const key = b.comercializador.trim().toLowerCase()
+        if (!seen.has(key)) seen.set(key, b.comercializador.trim())
+      }
+    })
+    return [...seen.values()].sort((a, b) => a.localeCompare(b)) as string[]
+  })
 
   type GroupBy = '' | 'or' | 'comercializador' | 'city' | 'labels'
   const groupBy = ref<GroupBy>('')
 
   const groupedBranches = computed(() => {
     if (!groupBy.value) return null
-    const groups = new Map<string, Branch[]>()
+    // Use canonical Map: normalized key → { displayLabel, branches[] }
+    const groups = new Map<string, { label: string; branches: Branch[] }>()
+
     for (const b of filteredBranches.value) {
-      let keys: string[]
+      let pairs: { key: string; label: string }[]
+
       if (groupBy.value === 'labels') {
         const effective = [...(b.labels ?? [])]
         if (isProspecto(b) && !effective.includes('Prospecto')) effective.unshift('Prospecto')
-        keys = effective.length ? effective : ['Sin etiqueta']
+        pairs = effective.length
+          ? effective.map((l) => ({ key: l.toLowerCase(), label: l }))
+          : [{ key: 'sin etiqueta', label: 'Sin etiqueta' }]
       } else {
-        const val = (b[groupBy.value as keyof Branch] as string) || `Sin ${groupBy.value}`
-        keys = [val]
+        const raw = (b[groupBy.value as keyof Branch] as string | null | undefined) ?? ''
+        const label = raw.trim() || `Sin ${groupBy.value}`
+        pairs = [{ key: label.toLowerCase(), label }]
       }
-      for (const key of keys) {
-        if (!groups.has(key)) groups.set(key, [])
-        groups.get(key)!.push(b)
+
+      for (const { key, label } of pairs) {
+        if (!groups.has(key)) groups.set(key, { label, branches: [] })
+        groups.get(key)!.branches.push(b)
       }
     }
-    return [...groups.entries()].sort((a, b) => a[0].localeCompare(b[0]))
+
+    return [...groups.values()]
+      .sort((a, b) => a.label.localeCompare(b.label, 'es'))
+      .map((g) => [g.label, g.branches] as [string, Branch[]])
   })
 
   const hasActiveFilters = computed(() =>
@@ -182,7 +222,7 @@ export const useSedes = () => {
 
   // Stats
   const unergyCount = computed(() => branches.value.filter((b) => b.unergy_subscribed).length)
-  const cityCount = computed(() => new Set(branches.value.map((b) => b.city)).size)
+  const cityCount = computed(() => new Set(branches.value.map((b) => b.city?.trim().toLowerCase()).filter(Boolean)).size)
   const ugranjaCount = computed(() => branches.value.filter((b) => b.ugranja_id).length)
   const solarCount = computed(() => branches.value.filter((b) => b.solar).length)
 
